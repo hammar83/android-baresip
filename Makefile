@@ -2,7 +2,7 @@
 
 # Path to your Android NDK (must be r19 or higher)
 # Only tested with the one that is included in Android Sdk
-NDK_PATH  :=  ~/Downloads/android-ndk-r20
+NDK_PATH  :=  ~/android-ndk-r19c
 
 # Android API level
 API_LEVEL := 21
@@ -11,7 +11,7 @@ API_LEVEL := 21
 ANDROID_TARGET_ARCH := arm64-v8a
 
 # Directory where libraries and include files are instelled
-OUTPUT_DIR := /usr/src/baresip-studio/distribution
+OUTPUT_DIR := ./distribution
 
 # -------------------- GENERATED VALUES --------------------
 
@@ -31,15 +31,15 @@ endif
 
 PLATFORM	:= android-$(API_LEVEL)
 OS		    := $(shell uname -s | tr "[A-Z]" "[a-z]")
-HOST_OS		:= linux-x86_64
+HOST_OS		:= darwin-x86_64
 
 PWD		:= $(shell pwd)
 
 # Toolchain and sysroot
-TOOLCHAIN	:= $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64
+TOOLCHAIN	:= $(NDK_PATH)/toolchains/llvm/prebuilt/darwin-x86_64
 SYSROOT		:= $(TOOLCHAIN)/sysroot
 SYSROOT_INC     := $(NDK_PATH)/sysroot
-PKG_CONFIG_LIBDIR := $(NDK_PATH)/prebuilt/linux-x86_64/lib/pkgconfig
+PKG_CONFIG_LIBDIR := $(NDK_PATH)/prebuilt/darwin-x86_64/lib/pkgconfig
 
 # Toolchain tools
 PATH	:= $(TOOLCHAIN)/bin:/usr/bin:/bin
@@ -149,7 +149,7 @@ librem.a: Makefile libre.a
 	make distclean -C rem
 	PATH=$(PATH) RANLIB=$(RANLIB) AR=$(AR) CC=$(CC) make $@ -C rem $(COMMON_FLAGS)
 
-libbaresip: Makefile openssl opus g7221 ilbc webrtc zrtp librem.a libre.a
+libbaresip: Makefile openssl opus librem.a libre.a
 	make distclean -C baresip
 	PKG_CONFIG_LIBDIR=$(PKG_CONFIG_LIBDIR) PATH=$(PATH) RANLIB=$(RANLIB) AR=$(AR) CC=$(CC) CXX=$(CXX) \
 	make libbaresip.a -C baresip $(COMMON_FLAGS) STATIC=1 LIBRE_SO=$(PWD)/re LIBREM_PATH=$(PWD)/rem MOD_AUTODETECT= BASIC_MODULES=no EXTRA_MODULES="$(EXTRA_MODULES)"
