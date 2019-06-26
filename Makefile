@@ -2,7 +2,7 @@
 
 # Path to your Android NDK (must be r19 or higher)
 # Only tested with the one that is included in Android Sdk
-NDK_PATH  :=  ~/android-ndk-r19c
+NDK_PATH  :=  ~/Downloads/android-ndk-r20
 
 # Android API level
 API_LEVEL := 21
@@ -31,15 +31,15 @@ endif
 
 PLATFORM	:= android-$(API_LEVEL)
 OS		    := $(shell uname -s | tr "[A-Z]" "[a-z]")
-HOST_OS		:= darwin-x86_64
+HOST_OS		:= linux-x86_64
 
 PWD		:= $(shell pwd)
 
 # Toolchain and sysroot
-TOOLCHAIN	:= $(NDK_PATH)/toolchains/llvm/prebuilt/darwin-x86_64
+TOOLCHAIN	:= $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64
 SYSROOT		:= $(TOOLCHAIN)/sysroot
 SYSROOT_INC     := $(NDK_PATH)/sysroot
-PKG_CONFIG_LIBDIR := $(NDK_PATH)/prebuilt/darwin-x86_64/lib/pkgconfig
+PKG_CONFIG_LIBDIR := $(NDK_PATH)/prebuilt/linux-x86_64/lib/pkgconfig
 
 # Toolchain tools
 PATH	:= $(TOOLCHAIN)/bin:/usr/bin:/bin
