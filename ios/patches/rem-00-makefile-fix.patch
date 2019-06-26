@@ -1,0 +1,25 @@
+From 688a7365eeae9a1a217b62eea0a95b2c77f2a48c Mon Sep 17 00:00:00 2001
+From: Erik Sundin <erik.sundin@freespee.com>
+Date: Fri, 5 Apr 2019 12:18:59 +0200
+Subject: Fix Makefile for ios builds
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 7342c46..f03989a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -85,7 +85,7 @@ all: $(SHARED) $(STATIC)
+ 
+ $(SHARED): $(OBJS)
+ 	@echo "  LD      $@"
+-	@$(LD) $(LFLAGS) $(SH_LFLAGS) $^ -L$(LIBRE_SO) -lre $(LIBS) -o $@
++	@$(LD) $(LFLAGS) $(SH_LFLAGS) $^ -L$(DESTDIR)$(LIBDIR) -lre $(LIBS) -o $@
+ 
+ 
+ $(STATIC): $(OBJS)
+-- 
+2.18.0
+

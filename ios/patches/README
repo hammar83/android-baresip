@@ -1,0 +1,19 @@
+# Patch details
+
+## RE
+
+`re-00-add-route-header.patch`
+Adds route.h in include/net. See https://github.com/alfredh/baresip/issues/434
+
+## REM
+
+`rem-00-makefile-fix.patch`
+Fixes Makefile for ios compile. See https://github.com/alfredh/baresip-ios/issues/16
+
+## BARESIP
+
+`baresip-00-remove-audiosession-handling.patch`
+Removes baresip activation/deactivation of Audiosession from audiounit module. We need to handle that on the SDK level for CallKit to work.
+
+`baresip-01-audiounit-errors-removal.patch`
+Stops error outputs from audiounit on iOS 12. See https://github.com/opentok/opentok-ios-sdk-samples-swift/issues/46

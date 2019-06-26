@@ -1,0 +1,14 @@
+# Patch details
+
+## RE
+
+`re-00-expose-msg-on-cancel.patch`
+Passes on the SIP CANCEL message as a session is terminated.
+
+## BARESIP
+
+`baresip-00-fs-presence.patch`
+Adds custom freespee presence module to baresip.
+
+`baresip-01-pass-cancel-reason-on-close.patch`
+Check for SIP CANCEL when a sip session closes and pass on the Reason header value in the call closed event. 

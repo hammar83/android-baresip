@@ -1,0 +1,52 @@
+From 5435d86bd413cc5ef16305b60d03299c3a12c18f Mon Sep 17 00:00:00 2001
+From: Erik Sundin <erik.sundin@freespee.com>
+Date: Fri, 5 Apr 2019 12:09:13 +0200
+Subject: Stop error output from audiounit
+
+---
+ modules/audiounit/player.c   | 7 +++++++
+ modules/audiounit/recorder.c | 3 ++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/modules/audiounit/player.c b/modules/audiounit/player.c
+index 230b1ad..1a76ebf 100644
+--- a/modules/audiounit/player.c
++++ b/modules/audiounit/player.c
+@@ -143,6 +143,13 @@ int audiounit_player_alloc(struct auplay_st **stp, const struct auplay *ap,
+ 		goto out;
+ 	}
+ 
++	enable = 0;
++	ret = AudioUnitSetProperty(st->au, kAudioOutputUnitProperty_EnableIO,
++				   kAudioUnitScope_Input, 1,
++				   &enable, sizeof(enable));
++	if (ret)
++		goto out;
++
+ 	st->sampsz = (uint32_t)aufmt_sample_size(prm->fmt);
+ 
+ 	fmt.mSampleRate       = prm->srate;
+diff --git a/modules/audiounit/recorder.c b/modules/audiounit/recorder.c
+index b66ba07..2a7a62c 100644
+--- a/modules/audiounit/recorder.c
++++ b/modules/audiounit/recorder.c
+@@ -165,7 +165,6 @@ int audiounit_recorder_alloc(struct ausrc_st **stp, const struct ausrc *as,
+ 	if (ret)
+ 		goto out;
+ 
+-#if ! TARGET_OS_IPHONE
+ 	enable = 0;
+ 	ret = AudioUnitSetProperty(st->au, kAudioOutputUnitProperty_EnableIO,
+ 				   kAudioUnitScope_Output, 0,
+@@ -173,6 +172,8 @@ int audiounit_recorder_alloc(struct ausrc_st **stp, const struct ausrc *as,
+ 	if (ret)
+ 		goto out;
+ 
++#if ! TARGET_OS_IPHONE
++	
+ 	ret = AudioObjectGetPropertyData(kAudioObjectSystemObject,
+ 			&auAddress,
+ 			0,
+-- 
+2.18.0
+

@@ -1,0 +1,36 @@
+From d38da5f4f6f402f6ed75380867fa8bcfc4c51f5e Mon Sep 17 00:00:00 2001
+From: Erik Sundin <erik.sundin@freespee.com>
+Date: Fri, 5 Apr 2019 12:11:50 +0200
+Subject: Pick reason from CANCEL message on call close
+
+---
+ src/call.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/src/call.c b/src/call.c
+index 5fcbdb1..6e63fde 100644
+--- a/src/call.c
++++ b/src/call.c
+@@ -1433,8 +1433,17 @@ static void sipsess_close_handler(int err, const struct sip_msg *msg,
+ 	if (err) {
+ 		info("%s: session closed: %m\n", call->peer_uri, err);
+ 
+-		(void)re_snprintf(reason, sizeof(reason), "%m", err);
+-
++		if (msg && !pl_strcmp(&msg->met, "CANCEL")) {
++			const struct sip_hdr *h = sip_msg_hdr(msg, SIP_HDR_REASON);
++			char *hval = NULL;
++			(void)pl_strdup(&hval, &h->val);
++			(void)re_snprintf(reason, sizeof(reason), "%s", hval);
++			mem_deref(hval);
++
++		} else {
++			(void)re_snprintf(reason, sizeof(reason), "%m", err);
++		}
++		
+ 		if (call->not) {
+ 			(void)call_notify_sipfrag(call, 500, "%m", err);
+ 		}
+-- 
+2.18.0
+

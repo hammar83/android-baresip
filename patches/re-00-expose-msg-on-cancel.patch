@@ -1,0 +1,73 @@
+From 934dff85282ae7ef6dbd6ccaaa8a4519a7b1e002 Mon Sep 17 00:00:00 2001
+From: Erik Sundin <erik.sundin@freespee.com>
+Date: Fri, 5 Apr 2019 15:11:26 +0200
+Subject: expose SIP CANCEL message on close
+
+---
+ include/re_sip.h     | 2 +-
+ src/sip/strans.c     | 5 +++--
+ src/sipsess/accept.c | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/include/re_sip.h b/include/re_sip.h
+index 9a2af7a..8b5f7ae 100644
+--- a/include/re_sip.h
++++ b/include/re_sip.h
+@@ -234,7 +234,7 @@ typedef bool(sip_msg_h)(const struct sip_msg *msg, void *arg);
+ typedef int(sip_send_h)(enum sip_transp tp, const struct sa *src,
+ 			const struct sa *dst, struct mbuf *mb, void *arg);
+ typedef void(sip_resp_h)(int err, const struct sip_msg *msg, void *arg);
+-typedef void(sip_cancel_h)(void *arg);
++typedef void(sip_cancel_h)(const struct sip_msg *msg, void *arg);
+ typedef void(sip_exit_h)(void *arg);
+ typedef int(sip_auth_h)(char **username, char **password, const char *realm,
+ 			void *arg);
+diff --git a/src/sip/strans.c b/src/sip/strans.c
+index 13a875c..19ccb99 100644
+--- a/src/sip/strans.c
++++ b/src/sip/strans.c
+@@ -139,8 +139,9 @@ static bool cmp_merge_handler(struct le *le, void *arg)
+ }
+ 
+ 
+-static void dummy_handler(void *arg)
++static void dummy_handler(const struct sip_msg *msg, void *arg)
+ {
++	(void)msg;
+ 	(void)arg;
+ }
+ 
+@@ -219,7 +220,7 @@ static bool cancel_handler(struct sip *sip, const struct sip_msg *msg)
+ 
+ 	case TRYING:
+ 	case PROCEEDING:
+-		st->cancelh(st->arg);
++		st->cancelh(msg, st->arg);
+ 		break;
+ 
+ 	default:
+diff --git a/src/sipsess/accept.c b/src/sipsess/accept.c
+index b8d02f8..fb9cbcf 100644
+--- a/src/sipsess/accept.c
++++ b/src/sipsess/accept.c
+@@ -18,7 +18,7 @@
+ #include "sipsess.h"
+ 
+ 
+-static void cancel_handler(void *arg)
++static void cancel_handler(const struct sip_msg *msg, void *arg)
+ {
+ 	struct sipsess *sess = arg;
+ 
+@@ -30,7 +30,7 @@ static void cancel_handler(void *arg)
+ 	if (sess->terminated)
+ 		return;
+ 
+-	sipsess_terminate(sess, ECONNRESET, NULL);
++	sipsess_terminate(sess, ECONNRESET, msg);
+ }
+ 
+ 
+-- 
+2.18.0
+

@@ -192,7 +192,6 @@ download-sources:
 	tar zxf opus-1.3.1.tar.gz
 	rm opus-1.3.1.tar.gz
 	mv opus-1.3.1 opus
-	patch -p0 < reg.c-patch
 
 clean:
 	make distclean -C baresip
