@@ -1,6 +1,6 @@
-baresip/
-distribution/
-openssl/
-opus/
-re/
-rem/
+android/baresip/
+android/distribution/
+android/openssl/
+android/opus/
+android/re/
+android/rem/
